@@ -72,17 +72,17 @@ def ground_truth2sample_table(label: list, now_time: float, person_dict: dict, l
                 print(tuple_hlt, t)
                 raise ValueError("object_time error")
             early_time = np.random.normal(loc=0,
-                                          scale=60 * 60 * (0.5 if "room" in location else 1)) / 2  # 采样实际提前了多长时间(可为负数)
+                                          scale=60 * 1)  # 采样实际提前了多长时间(可为负数)
             arrival_time = estimated_arrival_time[0] - early_time  # 实际到达的时间
-            over_stay_time = np.random.normal(loc=0, scale=60 * 60 * (
-                0.5 if "room" in location else 1)) / 2  # 采样实际晚走了多长时间(可为负数)
-            stay_time = 60 * 60 * 2 if len(estimated_arrival_time) == 1 else estimated_arrival_time[1] - \
-                                                                             estimated_arrival_time[0]
+            over_stay_time = np.random.normal(loc=0, scale=60 * 1)  # 采样实际晚走了多长时间(可为负数)
+            stay_time = 60 * 60 * (0.5 if "room" in location else 1) if len(estimated_arrival_time) == 1 \
+                else estimated_arrival_time[1] - estimated_arrival_time[0]
             leave_time = estimated_arrival_time[0] + over_stay_time + stay_time  # 实际离开的时间
             # 计算到达和离开的步数
             arrival_step = int((arrival_time - that_day_8_o_clock) // sample_interval)
             leave_step = int((leave_time - that_day_8_o_clock) // sample_interval)
-
+            if arrival_step < 0:
+                leave_step = 0
             if subject in ["全体员工", "大家", "所有人", "我们"]:
                 for p in real_person_table:
                     real_person_table[p]["real_person_table"][0:][arrival_step:leave_step] = 0
@@ -131,20 +131,29 @@ def get_one_sample_precision_and_recall_with_no_resident(pre_table, truth_table,
         pre = torch.tensor(pre_table[p])
         label = torch.tensor(truth_table[p]["real_person_table"])
         resident_line_idx = truth_table[p]["resident_line_idx"]
+        a = label[resident_line_idx]
+        pre_no_resident = torch.zeros(pre.shape)
+        for idx_step, idx in enumerate(list(pre.max(dim=0).indices.numpy())):  # 置位最大值
+            pre_no_resident[:, idx_step][idx] = 1
+
         if (label[resident_line_idx] == 1).all():
-            print(label.shape, label[resident_line_idx].shape)
             continue
-        pre_no_resident = torch.cat((pre[:resident_line_idx], pre[resident_line_idx + 1:]), dim=0)
+        pre_no_resident = torch.cat((pre_no_resident[:resident_line_idx], pre_no_resident[resident_line_idx + 1:]),
+                                    dim=0)
         label_no_resident = torch.cat((label[:resident_line_idx], label[resident_line_idx + 1:]), dim=0)
-        pre_label_no_resident = (pre_no_resident > threshold)
-        TP = ((pre_no_resident > threshold) * label_no_resident).sum()
-        recall = TP/label_no_resident.sum()
-        precision = TP/pre_label_no_resident.sum()
-        F1 = 2 * recall * precision / (recall + precision)
+        a = label_no_resident.sum()
+        b = pre_no_resident.sum()
+        TP = (pre_no_resident * label_no_resident).sum()    # 预测为正样本，且预测正确的个数
+        TP_Add_FN = label_no_resident.sum()  # 所有正样本数
+        TP_Add_FP = pre_no_resident.sum()  # 预测为正样本的个数
+        precision = TP / TP_Add_FP
+        recall = TP / TP_Add_FN
+        F1 = (2 * recall * precision) / (recall + precision)
         recall_sum += recall
         precision_sum += precision
         F1_sum += F1
         n += 1
+
     if n == 0:
-        print(0)
-    return recall_sum/n, precision_sum/n, F1_sum/n
+        return 0, 0, 0
+    return recall_sum / n, precision_sum / n, F1_sum / n

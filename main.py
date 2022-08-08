@@ -18,7 +18,7 @@ class deal():
             m.dynamic_space_time_graph(i, label)
 
         pre, truth = self.update_graph.simulate_time(begin=begin, end=end, stride=stride)
-        res = get_one_sample_precision_and_recall_with_no_resident(pre, truth)
+        res = get_one_sample_precision_and_recall_with_no_resident(pre, truth, 0.2)
         return res
 
     def dynamic_space_time_graph(self, text, label):
@@ -48,6 +48,12 @@ def stamptotime(stamp):
     otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     return otherStyleTime
 
+#
+# with open('experiment.json', encoding='utf-8') as f:
+#     dataset = json.load(f)
+#     for sample in dataset:
+#         sample/
+# exit()
 
 if __name__ == '__main__':
     m = deal()
@@ -55,12 +61,18 @@ if __name__ == '__main__':
         dataset = json.load(f)
     sum = 0
     nums = len(dataset)
-    for i in dataset:
+    r_sum, p_sum, f1_sum = 0, 0, 0
+    for idx, i in enumerate(dataset):
         messege = i['dialogue']
         label = i['label']
-        r_sum, p_sum, f1_sum = m.caluate(48, 0, 0, messege, label)
-        print(r_sum, p_sum, f1_sum)
-    print(sum / nums)
+        r, p, f1 = m.caluate(720, 0, 0, messege, label)
+        if (r, p, f1) == (0, 0, 0):
+            continue
+        r_sum += r
+        p_sum += p
+        f1_sum += f1
+        print(r_sum/(idx+1), p_sum/(idx+1), f1_sum/(idx+1))
+
 
 
 

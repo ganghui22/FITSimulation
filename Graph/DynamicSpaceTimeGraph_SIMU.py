@@ -375,7 +375,7 @@ class update():
             except:
                 print('-------can not record the triple, drop out----3!!!!--------')
 
-        time.sleep(0.01)
+        # time.sleep(0.01)
         self.old_initiator = self.initiator
 
     # print('====event=========',self.event)
@@ -397,7 +397,6 @@ class update():
                             self.sigma = sigma_other_location
                             self.total_time_o = total_time_other
                         # 更新可能性
-
                         time_err = self.now_time - timetostamp(e[2][0])
 
                         if 0 < time_err < self.total_time_o - 1:
@@ -433,6 +432,7 @@ class update():
             for a, b in need_delete_list:
                 del self.need_update[a][b]
         except Exception as m:
+            print("update_auto")
             print(str(m))
             pass
     def simulate_time(self, begin=0, end=0, stride=12):

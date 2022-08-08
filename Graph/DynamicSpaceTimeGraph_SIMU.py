@@ -103,11 +103,14 @@ class update():
         for i, xy in location_dict.items():
             self.location_total.append(i.lower())
         self.location_total.append('其他')
+        # print(self.location_total)
         self.location_id = {}
         for i in self.location_total:
             self.location_id[i] = self.id
             self.id += 1
-            # print(self.id)
+        # print(self.location_id)
+        # print(list(self.location_id.keys()))
+        # print(self.id)
         self.stride = stride  # 采样步数
         self.distribute = [0] * (self.id + 1)
         # print(self.distribute)
@@ -133,7 +136,8 @@ class update():
             # print(self.location_id[self.graph_rel[p]["rel_base"][1].lower()])
             self.graph_rel[p]['rel_now'][self.location_id[self.graph_rel[p]["rel_base"][1].lower()]] = 1
             self.need_update[p] = {}
-            self.virtual_person_location_table[p] = [[0] * self.stride for i in range(self.id + 1)]
+            self.virtual_person_location_table[p] = [[0] * self.stride for i in range(self.id)]
+
 
         self.today_time = time.localtime(time.time())
         self.now_time = timetostamp(
@@ -448,7 +452,7 @@ class update():
             # print(self.now_time)
             self.update_auto()
             for pp, table in self.virtual_person_location_table.items():
-                for cloumn in range(self.id + 1):  # 地点
+                for cloumn in range(self.id):  # 地点
                     # print(cloumn,nums)
                     self.virtual_person_location_table[pp][cloumn][nums] = self.graph_rel[pp]['rel_now'][cloumn]
             result.append(self.virtual_person_location_table)

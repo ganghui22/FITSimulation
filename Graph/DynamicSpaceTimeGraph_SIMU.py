@@ -90,109 +90,9 @@ def cal_time_zhishu(sigma, time_go, time):
     return Y[time]
 
 
-class Graph():
-    def __init__(self):
-        self.person = ['港晖', '晨峻', '伟华', '刘老师', '袁老师', '刘毅', '姚峰', '侯煊', '小飞', '郝伟', '海洋', '春秋', '靖宇', '兴航', '文栋', '兰军',
-                       '李老师', '馨竹']
-        self.location = ['Room510', 'Room511', 'Room512', 'Room513', 'Room514', 'Room515', 'Room516']
-        self.other_location = ['1号会议室', '2号会议室', '讨论区', '休息室']
-        self.outdoor = ['超市', '电影院', '上海', '公园', '机场', '食堂', '1001教室', '1002教室', '1003教室']
-        self.pos_1 = {
-            '港晖': [-0.06590949, -0.98459114], 'Room516': [-0.11786665, -0.85143201], '晨峻':
-                [-0.00480235, 0.65759833], 'Room510': [-0.11290646, 0.68940615], '伟华':
-                [-0.05434, 0.45155499], '刘老师': [-0.63341604, -0.76072163], 'Room511':
-                [-0.52784206, -0.63116621], '袁老师': [0.38728818, -0.72880871], 'Room512':
-                [0.38210208, -0.86613776], '刘毅': [-0.20869839, -0.98553632], '姚峰':
-                [-0.08793546, 0.85471983], '侯煊': [0.47539044, 0.69069804], 'Room515':
-                [0.38868173, 0.56584303], '小飞': [-0.22183974, 0.82653035], '郝伟':
-                [0.89141278, 0.33221307], 'Room513': [0.7212116, 0.32303753], '海洋':
-                [-0.36248728, 0.10174334], 'Room514': [-0.55537919, 0.20630467], '春秋':
-                [-0.64660707, 0.3322593], '靖宇': [0.33638749, 0.69034494], '兴航':
-                [0.35578187, 0.39735446], '文栋': [-0.72049126, 0.23389377], '兰军':
-                [0.65899121, 0.41378254], '李老师': [0.2501025, -0.81441738], '馨竹':
-                [-0.07180646, -0.6593223], ' ': [-0.81032829, 0.01610876], '  ': [-0.81032829, 0.01610876], '1号会议室':
-                [-0.81032829, 0.01610876], '茶水间':
-                [-0.64787042, 0.60134683], '讨论区':
-                [1., 0.02354849], '休息室': [-0.74027552, -0.46807695], '其他': [0.074027552, -0.46807695],
-            '2号会议室': [0.84768565, -0.59677]}
-        # '1001教室': [0.89010407, -0.27253654], '1002教室':
-        # [-0.92707715, -0.29802952], '1003教室': [0.80476599, 0.56320228],'2号会议室': [0.84768565, -0.59677],
-        self.man_anotate = {'Room511': [-0.58564247, 0.25416477], 'Room512': [-0.38256115, -0.57270125],
-                            'Room513': [0.33214105, -0.87734133], 'Room515': [0.57428342, -0.38469979],
-                            'Room514': [0.22919887, 0.65937288], 'Room510': [-0.5283078, 0.56331821],
-                            'Room516': [0.43335628, 0.92137264]}
 
-    def draw(self, graph_rel):
 
-        plt.rcParams['font.sans-serif'] = ['SimHei']
 
-        self.G = nx.Graph()
-        self.graph_rel = graph_rel
-        self.node_colors = []
-        self.edge_colors = []
-        for personName, all_rel in self.graph_rel.items():
-            if all_rel['rel_now'] != None:
-                for other in self.outdoor:
-                    if all_rel['rel_now'][1] == other:
-                        all_rel['rel_now'][1] = '其他'
-                        break
-                self.G.add_edge(all_rel['rel_now'][0], all_rel['rel_now'][1], edge_color=all_rel['rel_now'][2] * 1000)
-            else:
-                self.G.add_edge(all_rel['rel_base'][0], all_rel['rel_base'][1],
-                                edge_color=all_rel['rel_base'][2] * 1000)
-        self.G.add_edge(' ', '1号会议室', edge_color=0)
-        self.G.add_edge('  ', '1号会议室', edge_color=1000)
-
-        '''添加orther_location的node'''
-        self.G.add_nodes_from(self.other_location)
-        self.G.add_nodes_from(self.location)
-        self.G.add_nodes_from(self.person)
-        self.G.add_node('其他')
-
-        '''设置排列的形式'''
-        plt.rcParams['figure.figsize'] = (16, 8)
-        self.pos = self.pos_1
-        '''删掉某一个节点'''
-        # self.G.remove_edge(' 港晖', 'Room511')
-        for i in self.G.nodes():
-            if i in self.other_location:
-                self.node_colors.append('pink')
-            elif i in self.location:
-                self.node_colors.append('#9370db')  # 浅紫色
-            else:
-                self.node_colors.append('#1f78b4')
-
-        eee = nx.get_edge_attributes(self.G, 'edge_color')
-        for edge in self.G.edges():
-            self.edge_colors.append(eee[edge])
-        # print(self.edge_colors)
-        nx.draw_networkx_labels(self.G, self.pos, horizontalalignment='center', verticalalignment="top")
-        nx.draw_networkx(self.G, with_labels=False, width=2, pos=self.pos, node_color=self.node_colors,
-                         edge_color=self.edge_colors, edge_cmap=plt.cm.Blues)  # add colors
-        plt.savefig('Graph/graph_update.png')
-        canvas = FigureCanvasAgg(plt.gcf())
-        # 绘制图像
-        canvas.draw()
-        # 获取图像尺寸
-        w, h = canvas.get_width_height()
-        # 解码string 得到argb图像
-        buf = np.fromstring(canvas.tostring_argb(), dtype=np.uint8)
-        # 重构成w h 4(argb)图像
-        buf.shape = (w, h, 4)
-        # 转换为 RGBA
-        buf = np.roll(buf, 3, axis=2)
-        # 得到 Image RGBA图像对象 (需要Image对象的同学到此为止就可以了)
-        image = Image.frombytes("RGBA", (w, h), buf.tostring())
-        # 转换为numpy array rgba四通道数组
-        image = np.asarray(image)
-        # 转换为rgb图像
-        rgb_image = image[:, :, :3]
-        # print(rgb_image)
-        img = cv2.cvtColor(rgb_image, cv2.COLOR_BGR2RGBA)
-
-        plt.close()
-        self.G.clear()
-        return img
 
 
 class update():
@@ -202,6 +102,7 @@ class update():
         # print(location_dict)
         for i, xy in location_dict.items():
             self.location_total.append(i.lower())
+        self.location_total.append('其他')
         self.location_id = {}
         for i in self.location_total:
             self.location_id[i] = self.id
@@ -315,8 +216,8 @@ class update():
 
         value[0] = self.normalize_name(value[0])
         value[1] = self.normalize_location(value[1])
-        if value[1] != [] and value[1] not in self.location_total:
-            value[1] = '其他'
+        if value[1] !='' and value[1] not in self.location_total:
+            value[1]='其他'
         if value[1] != '' and value[1] in self.person:  # 当地点是人的时候，对应这个人的办公室
             if self.graph_rel[value[1]]['rel_now'] != None:
                 value[1] = self.graph_rel[value[1]]['rel_now'][1]
@@ -335,11 +236,12 @@ class update():
             if value[0] in ['我们', '大家', '咱们', '全体员工', '所有人']:
                 self.total_person_flag = 1
         return value
-
-    def normalize_location(self, l):
+    def normalize_location(self,l):
+        if l=='':
+            return l
         for j in location:
-            if l in j:
-                l = j
+            if l in j :
+                l=j
                 break
         return l
 
@@ -474,60 +376,60 @@ class update():
     # print('====event=========',self.event)
 
     def update_auto(self):  # 自动的改变
-        try:
-            self.update_rel()
-            '''按照时间函数更新'''
-            need_delete_list = []
-            for k, info in self.need_update.items():
-                for t, e in info.items():
-                    # print('for 之后', self.need_update)
-                    if len(e[2]) == 1:
-                        '''设置时间函数的计算参数'''
-                        if e[1] in location:
-                            self.sigma = sigma_location
-                            self.total_time_o = total_time_location
-                        elif e[1] in other_location:
-                            self.sigma = sigma_other_location
-                            self.total_time_o = total_time_other
-                        # 更新可能性
+        # try:
+        self.update_rel()
+        '''按照时间函数更新'''
+        need_delete_list = []
+        for k, info in self.need_update.items():
+            for t, e in info.items():
+                # print('for 之后', self.need_update)
+                if len(e[2]) == 1:
+                    '''设置时间函数的计算参数'''
+                    if e[1] in location:
+                        self.sigma = sigma_location
+                        self.total_time_o = total_time_location
+                    elif e[1] in other_location:
+                        self.sigma = sigma_other_location
+                        self.total_time_o = total_time_other
+                    # 更新可能性
 
-                        time_err = self.now_time - timetostamp(e[2][0])
+                    time_err = self.now_time - timetostamp(e[2][0])
 
-                        if 0 < time_err < self.total_time_o - 1:
-                            tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = tmp_possibillity  # 更新可能性
-                            self.graph_rel[k]['rel_now'][
-                                self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1 - tmp_possibillity
+                    if 0 < time_err < self.total_time_o - 1:
+                        tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = tmp_possibillity  # 更新可能性
+                        self.graph_rel[k]['rel_now'][
+                            self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1 - tmp_possibillity
 
-                        # 小于阈值的时候，相当于不再存在
-                        if time_err > self.total_time_o:  # 这里加上time——err的
+                    # 小于阈值的时候，相当于不再存在
+                    if time_err > self.total_time_o:  # 这里加上time——err的
 
-                            self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
-                            # del m[k][t]
-                            need_delete_list.append((k, t))
+                        self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
+                        # del m[k][t]
+                        need_delete_list.append((k, t))
 
-                            # info_detail = '{} come back to office!!!'.format(info[0])
+                        # info_detail = '{} come back to office!!!'.format(info[0])
 
-                    else:
-                        if timetostamp(e[2][0]) < self.now_time < timetostamp(e[2][1]):
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 1
-                            for i in enumerate(self.graph_rel[k]['rel_now'][:self.location_id[e[1]]]):
-                                self.graph_rel[k]['rel_now'][i[0]] = 0
-                            for j in enumerate(
-                                    self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1:]):
-                                self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1 + j[0]] = 0
-                        elif self.now_time > timetostamp(e[2][1]):
-                            self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
-                            # del m[k][t]
-                            need_delete_list.append((k, t))
+                else:
+                    if timetostamp(e[2][0]) < self.now_time < timetostamp(e[2][1]):
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 1
+                        for i in enumerate(self.graph_rel[k]['rel_now'][:self.location_id[e[1]]]):
+                            self.graph_rel[k]['rel_now'][i[0]] = 0
+                        for j in enumerate(
+                                self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1:]):
+                            self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1 + j[0]] = 0
+                    elif self.now_time > timetostamp(e[2][1]):
+                        self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
+                        # del m[k][t]
+                        need_delete_list.append((k, t))
 
-            for a, b in need_delete_list:
-                del self.need_update[a][b]
-        except Exception as e:
-            print(str(e))
-
+        for a, b in need_delete_list:
+            del self.need_update[a][b]
+        # except Exception as m:
+        #     print(str(m))
+            # pass
     def simulate_time(self, begin=0, end=0, stride=12):
         s_begin = self.now_time + begin * 60 * 60
         s_end = self.now_time + (12 + end) * 60 * 60
@@ -542,6 +444,7 @@ class update():
         while total_days > 0:
             result = []
             self.now_time += diff_time
+            # print(self.now_time)
             self.update_auto()
             for pp, table in self.virtual_person_location_table.items():
                 for cloumn in range(self.id + 1):  # 地点

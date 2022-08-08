@@ -58,7 +58,7 @@ if __name__ == '__main__':
     for i in dataset:
         messege = i['dialogue']
         label = i['label']
-        r_sum, p_sum, f1_sum = m.caluate(720, 0, 0, messege, label)
+        r_sum, p_sum, f1_sum = m.caluate(48, 0, 0, messege, label)
         print(r_sum, p_sum, f1_sum)
     print(sum / nums)
 

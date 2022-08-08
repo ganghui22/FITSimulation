@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="61752002-bca8-4f84-bfb4-cd98e9970328" name="变更" comment="初始化仓库">
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/LabelAndIdx.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/added_tokens.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/pytorch_model.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/special_tokens_map.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/tf_model.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/tokenizer.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/tokenizer_config.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/bert/chinese-roberta-wwm-ext/vocab.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NlpToolKit/Chinese/model/graph_model.bin" beforeDir="false" />
+    <list default="true" id="61752002-bca8-4f84-bfb4-cd98e9970328" name="变更" comment="4">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +22,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="61c508e32f5f94b6d0ad8071787d340f3f1d0952" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -97,7 +93,35 @@
       <option name="project" value="LOCAL" />
       <updated>1659933206313</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="1">
+      <created>1659937306488</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1659937306489</updated>
+    </task>
+    <task id="LOCAL-00004" summary="2">
+      <created>1659939777515</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1659939777515</updated>
+    </task>
+    <task id="LOCAL-00005" summary="3">
+      <created>1659941885510</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1659941885510</updated>
+    </task>
+    <task id="LOCAL-00006" summary="4">
+      <created>1659952386000</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1659952386000</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -113,10 +137,15 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="初始化仓库" />
-    <option name="LAST_COMMIT_MESSAGE" value="初始化仓库" />
+    <MESSAGE value="1" />
+    <MESSAGE value="2" />
+    <MESSAGE value="3" />
+    <MESSAGE value="4" />
+    <option name="LAST_COMMIT_MESSAGE" value="4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -126,10 +155,12 @@
           <line>30</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Graph/DynamicSpaceTimeGraph_SIMU.py</url>
+          <line>204</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/FITSimulation$main.coverage" NAME="main 覆盖结果" MODIFIED="1659932718267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

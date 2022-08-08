@@ -176,7 +176,8 @@ class update():
         # tmp_graph = self.tmp_graph.copy()
         delete_list = []
         for time_dy, messege in self.tmp_graph.items():
-            if self.now_time >= timetostamp(time_dy[0]):
+            print(self.tmp_graph)
+            if self.now_time >= timetostamp(time_dy):
                 for per_event in messege:
                     for p in per_event:
                         ch_person = p[0]
@@ -187,8 +188,8 @@ class update():
                             self.graph_rel[ch_person]['rel_now'][i[0]] = 0
                         for j in enumerate(self.graph_rel[ch_person]['rel_now'][self.location_id[ch_location] + 1:]):
                             self.graph_rel[ch_person]['rel_now'][self.location_id[ch_location] + 1 + j[0]] = 0
-                        self.need_update[ch_person][time_dy[0]] = [ch_person, ch_location, time_dy]
-                delete_list.append(time_dy[0])
+                        self.need_update[ch_person][time_dy] = [ch_person, ch_location, time_dy]
+                delete_list.append(time_dy)
         for o in delete_list:
             del self.tmp_graph[o]
             # time.sleep(5)
@@ -381,60 +382,60 @@ class update():
     # print('====event=========',self.event)
 
     def update_auto(self):  # 自动的改变
-        try:
-            self.update_rel()
-            '''按照时间函数更新'''
-            need_delete_list = []
-            for k, info in self.need_update.items():
-                for t, e in info.items():
-                    # print('for 之后', self.need_update)
-                    if len(e[2]) == 1:
-                        '''设置时间函数的计算参数'''
-                        if e[1] in location:
-                            self.sigma = sigma_location
-                            self.total_time_o = total_time_location
-                        elif e[1] in other_location:
-                            self.sigma = sigma_other_location
-                            self.total_time_o = total_time_other
-                        # 更新可能性
-                        time_err = self.now_time - timetostamp(e[2][0])
+        # try:
+        self.update_rel()
+        '''按照时间函数更新'''
+        need_delete_list = []
+        for k, info in self.need_update.items():
+            for t, e in info.items():
+                # print('for 之后', self.need_update)
+                if len(e[2]) == 1:
+                    '''设置时间函数的计算参数'''
+                    if e[1] in location:
+                        self.sigma = sigma_location
+                        self.total_time_o = total_time_location
+                    elif e[1] in other_location:
+                        self.sigma = sigma_other_location
+                        self.total_time_o = total_time_other
+                    # 更新可能性
+                    time_err = self.now_time - timetostamp(e[2][0])
 
-                        if 0 < time_err < self.total_time_o - 1:
-                            tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = tmp_possibillity  # 更新可能性
-                            self.graph_rel[k]['rel_now'][
-                                self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1 - tmp_possibillity
+                    if 0 < time_err < self.total_time_o - 1:
+                        tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = tmp_possibillity  # 更新可能性
+                        self.graph_rel[k]['rel_now'][
+                            self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1 - tmp_possibillity
 
-                        # 小于阈值的时候，相当于不再存在
-                        if time_err > self.total_time_o:  # 这里加上time——err的
+                    # 小于阈值的时候，相当于不再存在
+                    if time_err > self.total_time_o:  # 这里加上time——err的
 
-                            self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
-                            # del m[k][t]
-                            need_delete_list.append((k, t))
+                        self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
+                        # del m[k][t]
+                        need_delete_list.append((k, t))
 
-                            # info_detail = '{} come back to office!!!'.format(info[0])
+                        # info_detail = '{} come back to office!!!'.format(info[0])
 
-                    else:
-                        if timetostamp(e[2][0]) < self.now_time < timetostamp(e[2][1]):
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 1
-                            for i in enumerate(self.graph_rel[k]['rel_now'][:self.location_id[e[1]]]):
-                                self.graph_rel[k]['rel_now'][i[0]] = 0
-                            for j in enumerate(
-                                    self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1:]):
-                                self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1 + j[0]] = 0
-                        elif self.now_time > timetostamp(e[2][1]):
-                            self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
-                            self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
-                            # del m[k][t]
-                            need_delete_list.append((k, t))
+                else:
+                    if timetostamp(e[2][0]) < self.now_time < timetostamp(e[2][1]):
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 1
+                        for i in enumerate(self.graph_rel[k]['rel_now'][:self.location_id[e[1]]]):
+                            self.graph_rel[k]['rel_now'][i[0]] = 0
+                        for j in enumerate(
+                                self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1:]):
+                            self.graph_rel[k]['rel_now'][self.location_id[e[1]] + 1 + j[0]] = 0
+                    elif self.now_time > timetostamp(e[2][1]):
+                        self.graph_rel[k]['rel_now'][self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1
+                        self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = 0
+                        # del m[k][t]
+                        need_delete_list.append((k, t))
 
-            for a, b in need_delete_list:
-                del self.need_update[a][b]
-        except Exception as m:
-            print("update_auto")
-            print(str(m))
-            pass
+        for a, b in need_delete_list:
+            del self.need_update[a][b]
+        # except Exception as m:
+        #     print("update_auto")
+        #     print(str(m))
+        #     pass
     def simulate_time(self, begin=0, end=0, stride=12):
         s_begin = self.now_time + begin * 60 * 60
         s_end = self.now_time + (12 + end) * 60 * 60

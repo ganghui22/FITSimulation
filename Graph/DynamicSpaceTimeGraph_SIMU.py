@@ -15,7 +15,7 @@ import threading
 import time
 import jionlp as jio
 import calendar
-from Graph.expreiment import ground_truth2sample_table
+from Graph.expreiment import ground_truth2sample_table,object_time2real_time
 
 location = ['room510', 'room511', 'room512', 'room513', 'room514', 'room515', 'room516']
 other_location = ['1号会议室', '2号会议室', '休息室', '茶水间', '1001教室', '1002教室', '1003教室', '讨论区', '其他']
@@ -162,7 +162,7 @@ class update():
         self.triple = triple
         for k, lll in enumerate(self.triple):
             if lll[2] != '':
-                self.triple[k][2] = self.object_time2real_time(lll[2], time.time())
+                self.triple[k][2] = object_time2real_time(lll[2], time.time())
         self.text = text
         self.tmp_dynamic_time_graph()
         self.label = label
@@ -466,32 +466,7 @@ class update():
                 total_days -= 1
         return self.virtual_person_location_table, truth
 
-    def object_time2real_time(self, tiem_object: str, qurey_time: float) -> list:
-        """
-        时间object映射到实际时间.当时间实体是时间点时，则返回具体时间，列表长度为1.当时间实体是时间段时，怎返回起始时间和终止时间，返回列表长度为2.当无法分析时间时，返回空列表
-        :param tiem_object: 输入时间实体
-        :param query_time: 请求时间，时间戳格式
-        :return: 返回时间戳
-        """
-        ret = []
-        result = []
-        if "会" in tiem_object:
-            return [stamptotime(qurey_time + 10 * 60)]
-        if tiem_object == "现在":
-            return [stamptotime(qurey_time)]
-        try:
-            prase_time = jio.parse_time(tiem_object, qurey_time)
-            if prase_time['type'] == "time_span":
-                ret = [calendar.timegm(time.strptime(prase_time['time'][0], "%Y-%m-%d %H:%M:%S")) - 28800,
-                       calendar.timegm(time.strptime(prase_time['time'][1], "%Y-%m-%d %H:%M:%S")) - 28800]
-            if prase_time['type'] == "time_point":
-                ret = [calendar.timegm(time.strptime(prase_time['time'][0], "%Y-%m-%d %H:%M:%S")) - 28800]
-            for i in ret:
-                result.append(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(i)))
 
-        except ValueError as e:
-            pass
-        return result
 
 def init_graph(Person, Location):
     graph = {}

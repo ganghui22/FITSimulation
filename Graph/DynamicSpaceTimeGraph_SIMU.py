@@ -203,9 +203,12 @@ class update():
                 if self.now_time < timetostamp(person_event[0][2][0]):
                     continue
                 else:
+                    print(person_event)
                     for per in person_event:
                         ch_person = per[0]
+                        print(ch_person)
                         ch_location = per[1]
+                        print(ch_location)
                         for i in enumerate(self.graph_rel[ch_person]['rel_now'][:self.location_id[ch_location]]):
                             self.graph_rel[ch_person]['rel_now'][i[0]] = 0
                         for j in enumerate(self.graph_rel[ch_person]['rel_now'][self.location_id[ch_location] + 1:]):
@@ -261,6 +264,10 @@ class update():
             if p in m:
                 m = p
                 break
+            if m in p:
+                m=p
+                break
+
         for t in self.teacher:
             if t == m:
                 m = '刘老师'

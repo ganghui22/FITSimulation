@@ -78,7 +78,7 @@ if __name__ == '__main__':
         print(r, p, f1)
         print(r_sum/n, p_sum/n, f1_sum/n, idx_dia)
         n += 1
-
+        print(idx_dia)
 
 
 

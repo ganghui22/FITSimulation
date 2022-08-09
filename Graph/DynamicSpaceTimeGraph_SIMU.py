@@ -176,7 +176,7 @@ class update():
         # tmp_graph = self.tmp_graph.copy()
         delete_list = []
         for time_dy, messege in self.tmp_graph.items():
-            print(self.tmp_graph)
+            # print(self.tmp_graph)
             if self.now_time >= timetostamp(time_dy):
                 for per_event in messege:
                     for p in per_event:
@@ -242,6 +242,7 @@ class update():
             if value[0] in ['我们', '大家', '咱们', '全体员工', '所有人']:
                 self.total_person_flag = 1
         return value
+
     def normalize_location(self,l):
         if l=='':
             return l

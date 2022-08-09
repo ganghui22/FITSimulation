@@ -5,7 +5,8 @@ import NlpToolKit.Chinese.DialoguePrediction as extract_triple
 import Graph.DynamicSpaceTimeGraph_SIMU as graph
 import numpy as np
 import time
-from Graph.expreiment import get_acc_one_sample, get_one_sample_precision_and_recall_with_no_resident
+from Graph.expreiment import get_acc_one_sample, get_one_sample_precision_and_recall_with_no_resident, \
+    get_one_sample_precision_and_recall
 
 
 class deal():
@@ -57,21 +58,26 @@ def stamptotime(stamp):
 
 if __name__ == '__main__':
     m = deal()
-    with open('experiment.json', encoding='utf-8') as f:
+    with open('experiment(8).json', encoding='utf-8') as f:
         dataset = json.load(f)
+
     sum = 0
     nums = len(dataset)
+    n = 1
     r_sum, p_sum, f1_sum = 0, 0, 0
-    for idx, i in enumerate(dataset):
+    for i in dataset:
         messege = i['dialogue']
         label = i['label']
+        idx_dia = i['index']
         r, p, f1 = m.caluate(720, 0, 0, messege, label)
         if (r, p, f1) == (0, 0, 0):
             continue
         r_sum += r
         p_sum += p
         f1_sum += f1
-        print(r_sum/(idx+1), p_sum/(idx+1), f1_sum/(idx+1))
+        print(r, p, f1)
+        print(r_sum/n, p_sum/n, f1_sum/n, idx_dia)
+        n += 1
 
 
 

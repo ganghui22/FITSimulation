@@ -162,7 +162,11 @@ class update():
         self.triple = triple
         for k, lll in enumerate(self.triple):
             if lll[2] != '':
-                self.triple[k][2] = object_time2real_time(lll[2], time.time())
+                result=[]
+                mm=object_time2real_time(lll[2], time.time())
+                for i in mm:
+                    result.append(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(i)))
+                self.triple[k][2] = result
         self.text = text
         self.tmp_dynamic_time_graph()
         self.label = label

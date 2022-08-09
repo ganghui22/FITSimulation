@@ -111,14 +111,14 @@ def ground_truth2sample_table(label: list, now_time: float, person_dict: dict, l
                 print(tuple_hlt, t)
                 raise ValueError("object_time error")
             early_time = np.random.normal(loc=0,
-                                          scale=60 * 1)  # 采样实际提前了多长时间(可为负数)
+                                          scale=10) * 60  # 采样实际提前了多长时间(可为负数)
             arrival_time = estimated_arrival_time[0] - early_time  # 实际到达的时间
-            over_stay_time = np.random.normal(loc=0, scale=60 * 1)  # 采样实际晚走了多长时间(可为负数)
+            over_stay_time = np.random.normal(loc=0, scale=10) * 60  # 采样实际晚走了多长时间(可为负数)
             stay_time = 60 * 60 * (0.5 if "room" in location else 1) if len(estimated_arrival_time) == 1 \
                 else estimated_arrival_time[1] - estimated_arrival_time[0]
             leave_time = estimated_arrival_time[0] + over_stay_time + stay_time  # 实际离开的时间
-            leave_time = 60 * 60 * (0.5 if "room" in location else 1) + estimated_arrival_time[0]
-            arrival_time = estimated_arrival_time[0]
+            # leave_time = 60 * 60 * (0.5 if "room" in location else 1) + estimated_arrival_time[0]
+            # arrival_time = estimated_arrival_time[0]
             # 计算到达和离开的步数
             arrival_step = int((arrival_time - that_day_8_o_clock) // sample_interval)
             leave_step = int((leave_time - that_day_8_o_clock) // sample_interval)
@@ -191,9 +191,9 @@ def get_one_sample_precision_and_recall_with_no_resident(pre_table, truth_table,
         TP = (pre_no_resident * label_no_resident).sum()  # 预测为正样本，且预测正确的个数
         TP_Add_FN = label_no_resident.sum()  # 所有正样本数
         TP_Add_FP = pre_no_resident.sum()  # 预测为正样本的个数
-        precision = TP / TP_Add_FP
-        recall = TP / TP_Add_FN
-        F1 = (2 * recall * precision) / (recall + precision)
+        precision = TP / TP_Add_FP if TP != 0 and TP_Add_FP != 0 else 0
+        recall = TP / TP_Add_FN if TP != 0 and TP_Add_FN != 0 else 0
+        F1 = (2 * recall * precision) / (recall + precision) if recall != 0 and precision != 0 else 0
         recall_sum += recall
         precision_sum += precision
         F1_sum += F1

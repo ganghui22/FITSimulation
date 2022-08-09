@@ -58,7 +58,7 @@ def stamptotime(stamp):
 
 if __name__ == '__main__':
     m = deal()
-    with open('experiment.json', encoding='utf-8') as f:
+    with open('experiment(12).json', encoding='utf-8') as f:
         dataset = json.load(f)
 
     sum = 0
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         print(r, p, f1)
         print(r_sum/n, p_sum/n, f1_sum/n, idx_dia)
         n += 1
-
+0
 
 
 

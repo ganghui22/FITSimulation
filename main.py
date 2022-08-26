@@ -15,8 +15,9 @@ class deal():
 
     def caluate(self, stride, begin, end, messege, label):
         self.update_graph = graph.update(stride)
-        for i in messege:
-            m.dynamic_space_time_graph(i, label)
+        for k,i_per in enumerate(messege):
+            for i in i_per:
+                m.dynamic_space_time_graph(i, label[k])
 
         pre, truth = self.update_graph.simulate_time(begin=begin, end=end, stride=stride)
         res = get_one_sample_precision_and_recall_with_no_resident(pre, truth, 0.2)
@@ -58,27 +59,39 @@ def stamptotime(stamp):
 
 if __name__ == '__main__':
     m = deal()
-    with open('experiment(12).json', encoding='utf-8') as f:
+    with open('experiment.json', encoding='utf-8') as f:
         dataset = json.load(f)
 
     sum = 0
     nums = len(dataset)
     n = 1
     r_sum, p_sum, f1_sum = 0, 0, 0
+    messege=[]
+    label=[]
+    num=5
+    total=num
     for i in dataset:
-        messege = i['dialogue']
-        label = i['label']
+        messege.append(i['dialogue'])
+        label.append(i['label'])
         idx_dia = i['index']
-        r, p, f1 = m.caluate(720, 0, 0, messege, label)
-        if (r, p, f1) == (0, 0, 0):
-            continue
-        r_sum += r
-        p_sum += p
-        f1_sum += f1
-        print(r, p, f1)
-        print(r_sum/n, p_sum/n, f1_sum/n, idx_dia)
-        n += 1
-0
+        total-=1
+        if total==0:
+            r, p, f1 = m.caluate(720, 0, 0, messege, label)
+            messege=[]
+            label=[]
+            total=num
+            if (r, p, f1) == (0, 0, 0):
+                continue
+            r_sum += r
+            p_sum += p
+            # f1_sum += f1
+            print(r, p, f1)
+            a_r=r_sum/n
+            a_p=p_sum/n
+            f1_a=2*a_p*a_r/(a_p+a_r)
+            print(a_r, a_p, f1_a, idx_dia)
+            n += 1
+
 
 
 

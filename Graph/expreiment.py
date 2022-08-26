@@ -111,9 +111,9 @@ def ground_truth2sample_table(label: list, now_time: float, person_dict: dict, l
                 print(tuple_hlt, t)
                 raise ValueError("object_time error")
             early_time = np.random.normal(loc=0,
-                                          scale=10) * 60  # 采样实际提前了多长时间(可为负数)
+                                          scale=10*60*0.5)  # 采样实际提前了多长时间(可为负数)
             arrival_time = estimated_arrival_time[0] - early_time  # 实际到达的时间
-            over_stay_time = np.random.normal(loc=0, scale=10) * 60  # 采样实际晚走了多长时间(可为负数)
+            over_stay_time = np.random.normal(loc=0, scale=30*60*0.5) # 采样实际晚走了多长时间(可为负数)
             stay_time = 60 * 60 * (0.5 if "room" in location else 1) if len(estimated_arrival_time) == 1 \
                 else estimated_arrival_time[1] - estimated_arrival_time[0]
             leave_time = estimated_arrival_time[0] + over_stay_time + stay_time  # 实际离开的时间

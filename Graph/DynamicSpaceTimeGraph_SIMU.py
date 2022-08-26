@@ -23,7 +23,7 @@ with open('data/Location_list.json', encoding='utf-8') as f:
     location_dict = json.load(f)
 
 total_time_location = 30 * 60
-total_time_other = 60 * 60
+total_time_other = 60  * 60
 sigma_location = total_time_location / 2
 sigma_other_location = total_time_other / 2
 
@@ -59,6 +59,17 @@ def cal_time(a, total_time, u, sigma, t_th):
     l = skewnorm.pdf(x, a, u, sigma)
     return l[t_th]
 
+def y(x, stay_time, early_time=10*60, late_time=30*60):
+    sigma_early_time = early_time
+    sigma_late_time = late_time
+    Normal_early = lambda x: np.multiply(np.power(np.sqrt(2 * np.pi) * sigma_early_time, -1), np.exp(-np.power(x - 0, 2) / (2 * sigma_early_time ** 2)))
+    Normal_late = lambda x: np.multiply(np.power(np.sqrt(2 * np.pi) * sigma_late_time, -1), np.exp(-np.power(x - 0, 2) / (2 * sigma_late_time ** 2)))
+    if x<0:
+        return Normal_early(x)
+    elif 0<=x<stay_time:
+        return 1-Normal_early(x) - Normal_late(x-stay_time)
+    elif x>=stay_time:
+        return Normal_late(x-stay_time)
 
 def cal_time_zheng(total_time, u, sigma, t_th):
     x = np.arange(0, total_time, 1)
@@ -203,12 +214,12 @@ class update():
                 if self.now_time < timetostamp(person_event[0][2][0]):
                     continue
                 else:
-                    print(person_event)
+                    # print(person_event)
                     for per in person_event:
                         ch_person = per[0]
-                        print(ch_person)
+                        # print(ch_person)
                         ch_location = per[1]
-                        print(ch_location)
+                        # print(ch_location)
                         for i in enumerate(self.graph_rel[ch_person]['rel_now'][:self.location_id[ch_location]]):
                             self.graph_rel[ch_person]['rel_now'][i[0]] = 0
                         for j in enumerate(self.graph_rel[ch_person]['rel_now'][self.location_id[ch_location] + 1:]):
@@ -315,7 +326,8 @@ class update():
                 if self.triple != [] and self.per_event != []:
                     self.event[self.initiator].append(self.per_event)
             except:
-                print('-------can not record the triple, drop out----1!!!!--------')
+                # print('-------can not record the triple, drop out----1!!!!--------')
+                pass
 
         # 由于是新的时间，所以把之前的存在的事件就默认已经确定不变，放在self.tmp_graph中，
 
@@ -348,7 +360,8 @@ class update():
                 self.tmp_graph[time_signal].append(self.event[self.initiator][0])
                 del self.event[self.initiator][0]
             except:
-                print('---------------can not change the time or location----2!!!!!---------------------')
+                # print('---------------can not change the time or location----2!!!!!---------------------')
+                pass
         elif self.if_need_change == 2:
             try:
                 if self.event[self.initiator] != []:
@@ -386,7 +399,8 @@ class update():
                 if self.triple != [] and self.per_event != []:
                     self.event[self.initiator].append(self.per_event)
             except:
-                print('-------can not record the triple, drop out----3!!!!--------')
+                # print('-------can not record the triple, drop out----3!!!!--------')
+                pass
 
         # time.sleep(0.01)
         self.old_initiator = self.initiator
@@ -413,7 +427,8 @@ class update():
                     time_err = self.now_time - timetostamp(e[2][0])
 
                     if 0 < time_err < self.total_time_o - 1:
-                        tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
+                        # tmp_possibillity = cal_time_zheng(self.total_time_o, 0, self.sigma, time_err)
+                        tmp_possibillity=y(time_err,stay_time=self.total_time_o)
                         self.graph_rel[k]['rel_now'][self.location_id[e[1]]] = tmp_possibillity  # 更新可能性
                         self.graph_rel[k]['rel_now'][
                             self.location_id[self.graph_rel[k]['rel_base'][1].lower()]] = 1 - tmp_possibillity
@@ -463,6 +478,7 @@ class update():
             result = []
             self.now_time += diff_time
             # print(self.now_time)
+            # self.update_rel()
             self.update_auto()
             for pp, table in self.virtual_person_location_table.items():
                 for cloumn in range(self.id):  # 地点
